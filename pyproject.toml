@@ -2,6 +2,9 @@
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.fastapi]
+entrypoint = "app.main:app"
+
 [project]
 name = "food-recommender"
 version = "0.1.0"

@@ -6,9 +6,9 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.core.config import config as app_config
-from src.db.database import Base
-from src.db.schema import DietTag, FoodDietTag, CuisineTag, FoodCuisineTag, FoodMetaData
+from app.core.config import config as app_config
+from app.db.postgres.database import Base
+from app.db.postgres.schema import *
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
