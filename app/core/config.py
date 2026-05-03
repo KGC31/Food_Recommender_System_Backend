@@ -20,11 +20,6 @@ class Config(BaseSettings):
     PG_PORT: int = int(os.getenv("PG_PORT")) if os.getenv("PG_PORT") else 5432
     POSTGRES_DB: str = os.getenv("POSTGRES_DB")
     
-    # Neo4j configuration
-    NEO4J_URI: str = os.getenv("NEO4J_URI")
-    NEO4J_USER: str = os.getenv("NEO4J_USER")
-    NEO4J_PASSWORD: str = os.getenv("NEO4J_PASSWORD")
-
     @property
     def db_url(self) -> str:
         return f"postgresql+psycopg2://{self.POSTGRES_USER}:{self.PGPASSWORD}@{self.PGHOST}:{self.PG_PORT}/{self.POSTGRES_DB}"

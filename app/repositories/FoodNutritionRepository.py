@@ -1,4 +1,3 @@
-from app.db.neo4j.connection import neo4j_conn
 from app.db.postgres.connection import get_db
 
 from app.db.postgres.schema import FoodNutrients100g
