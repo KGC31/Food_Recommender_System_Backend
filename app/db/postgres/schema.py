@@ -18,6 +18,7 @@ class FoodMetaData(Base):
     name_en = Column(String, unique=True, index=True)
     kcal_per_100g = Column(Float)
     kj_per_100g = Column(Float)
+    source = Column(String, default="")
     
 class NutritionMetaData(Base):
     __tablename__ = "nutrition_metadata"

@@ -48,3 +48,4 @@ class HealthMetricsService:
         )
 
         return int(tdee + adjustment)
+ 

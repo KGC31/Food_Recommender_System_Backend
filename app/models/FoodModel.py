@@ -8,6 +8,7 @@ class FoodMetaData(BaseModel):
     name_en: str
     kcal_per_100g: float
     kj_per_100g: float
+    source: str = ""
     
 class FoodBaseModel(BaseModel):
     food_metadata:              FoodMetaData

@@ -12,7 +12,8 @@ class FoodRepository:
             name_vi=data.name_vi,
             name_en=data.name_en,
             kcal_per_100g=data.kcal_per_100g,
-            kj_per_100g=data.kj_per_100g
+            kj_per_100g=data.kj_per_100g,
+            source=data.source
         )
         
         self.db.add(food)
@@ -28,6 +29,7 @@ class FoodRepository:
                     FoodMetaData.name_en,
                     FoodMetaData.kcal_per_100g,
                     FoodMetaData.kj_per_100g,
+                    FoodMetaData.source
                 )\
                 .filter(
                     FoodMetaData.kcal_per_100g >= min_kcal,
