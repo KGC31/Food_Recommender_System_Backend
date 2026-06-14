@@ -10,9 +10,7 @@ name = "food-recommender"
 version = "0.1.0"
 description = "Food recommendation system"
 authors = [
-    { 
-        name="Kim Nguyen Viet" 
-    }
+    { name = "Kim Nguyen Viet" }
 ]
 dependencies = [
     "alembic==1.18.4",

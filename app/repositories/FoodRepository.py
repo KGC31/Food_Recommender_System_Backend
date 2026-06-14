@@ -1,7 +1,7 @@
 from sqlalchemy import select
 import logging
 
-from app.db.postgres.schema import FoodMetaData
+from app.db.postgres.schema import FoodCategory, FoodMetaData
 
 class FoodRepository:
     def __init__(self, db):
@@ -13,7 +13,9 @@ class FoodRepository:
             name_en=data.name_en,
             kcal_per_100g=data.kcal_per_100g,
             kj_per_100g=data.kj_per_100g,
-            source=data.source
+            source=data.source,
+            source_url=data.source_url,
+            category_id=data.category_id
         )
         
         self.db.add(food)
@@ -29,7 +31,8 @@ class FoodRepository:
                     FoodMetaData.name_en,
                     FoodMetaData.kcal_per_100g,
                     FoodMetaData.kj_per_100g,
-                    FoodMetaData.source
+                    FoodMetaData.source,
+                    FoodMetaData.source_url
                 )\
                 .filter(
                     FoodMetaData.kcal_per_100g >= min_kcal,
@@ -39,6 +42,30 @@ class FoodRepository:
             result = self.db.execute(query).mappings().all()
             
             return result
+        except Exception as e:
+            logging.error(f"Internal Server Error: {e}")
+            raise e
+        
+    def get_or_create_category(self, category_name_vi: str, category_name_en: str):
+        try:
+            query = select(FoodCategory).filter(
+                FoodCategory.category_name_vi == category_name_vi,
+                FoodCategory.category_name_en == category_name_en
+            )
+            category = self.db.execute(query).scalar_one_or_none()
+            
+            if category:
+                return category
+            
+            new_category = FoodCategory(
+                category_name_vi=category_name_vi,
+                category_name_en=category_name_en
+            )
+            self.db.add(new_category)
+            self.db.flush()
+            
+            return new_category
+        
         except Exception as e:
             logging.error(f"Internal Server Error: {e}")
             raise e

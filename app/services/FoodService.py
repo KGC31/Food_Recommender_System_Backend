@@ -28,8 +28,25 @@ class FoodService:
     def create_food(self, data: FoodCreate) -> StatusCodeEnum:
         try:
             with self._session.begin():
+                # Get category id for food insertion
+                category_id = self.food_repository.get_or_create_category(
+                    category_name_vi=data.food_metadata.category_name_vi,
+                    category_name_en=data.food_metadata.category_name_en
+                ).id
+                
+                # Create and insert food metadata
+                food_metadata = FoodMetaData(
+                    name_vi=data.food_metadata.name_vi,
+                    name_en=data.food_metadata.name_en,
+                    kcal_per_100g=data.food_metadata.kcal_per_100g,
+                    kj_per_100g=data.food_metadata.kj_per_100g,
+                    source=data.food_metadata.source,
+                    source_url=data.food_metadata.source_url,
+                    category_id=category_id
+                )
+                
                 food = self.food_repository.create(
-                    data = data.food_metadata
+                    data = food_metadata
                 )
 
                 # Extract nutritrients for nutrient name and nutrient class
