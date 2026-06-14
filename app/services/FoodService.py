@@ -29,7 +29,7 @@ class FoodService:
         try:
             with self._session.begin():
                 # Get category id for food insertion
-                category_id = self.food_repository.get_or_create_category(
+                food_category_id = self.food_repository.get_or_create_category(
                     category_name_vi=data.food_metadata.category_name_vi,
                     category_name_en=data.food_metadata.category_name_en
                 ).id
@@ -42,7 +42,7 @@ class FoodService:
                     kj_per_100g=data.food_metadata.kj_per_100g,
                     source=data.food_metadata.source,
                     source_url=data.food_metadata.source_url,
-                    category_id=category_id
+                    food_category_id=food_category_id
                 )
                 
                 food = self.food_repository.create(

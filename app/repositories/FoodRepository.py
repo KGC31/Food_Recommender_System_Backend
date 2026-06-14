@@ -15,7 +15,7 @@ class FoodRepository:
             kj_per_100g=data.kj_per_100g,
             source=data.source,
             source_url=data.source_url,
-            category_id=data.category_id
+            food_category_id=data.food_category_id
         )
         
         self.db.add(food)
