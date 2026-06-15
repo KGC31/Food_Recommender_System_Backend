@@ -30,16 +30,87 @@ def create_food(food: FoodCreate, db: Session = Depends(get_db)):
             error_code=ErrorCode.FOOD_CREATION_FAILED,
             message=f"Failed to create food: {food.food_metadata.name_en}"
         )
+        
+@router.get("/{food_id}")
+def get_food_by_id(food_id: str, db: Session = Depends(get_db)):
+    try:
+        food_service = FoodService(db)
+        food_data = food_service.get_food_by_id(food_id)
+
+        if not food_data:
+            return CustomAPIResponse(
+                success=False,
+                error_code=ErrorCode.FOOD_NOT_FOUND,
+                message=f"Food with id {food_id} not found"
+            )
+
+        return food_data
+    except Exception as e:
+        logging.exception(e)
+        return CustomAPIResponse(
+            success=False,
+            error_code=ErrorCode.FOOD_RETRIEVAL_FAILED,
+            message=f"Failed to retrieve food with id {food_id}"
+        )
+
+@router.put("/{food_id}")
+def update_food(food_id: str, food: FoodCreate, db: Session = Depends(get_db)):
+    food_service = FoodService(db)
+
+    try:
+        success = food_service.update_food_by_id(food_id, food)
+
+        if not success:
+            return CustomAPIResponse(
+                success=False,
+                error_code=ErrorCode.FOOD_NOT_FOUND,
+                message=f"Food with id {food_id} not found"
+            )
+
+        return CustomAPIResponse(
+            success=True,
+            message=f"Food with id {food_id} updated successfully"
+        )
+
+    except Exception as e:
+        logging.exception(e)
+        return CustomAPIResponse(
+            success=False,
+            error_code=ErrorCode.FOOD_UPDATE_FAILED,
+            message=f"Failed to update food with id {food_id}"
+        )
+    
+@router.delete("/{food_id}", response_model=CustomAPIResponse)
+def delete_food(food_id: str, db: Session = Depends(get_db)):
+    food_service = FoodService(db)
+
+    try:
+        success = food_service.delete_food_by_id(food_id)
+
+        if not success:
+            return CustomAPIResponse(
+                success=False,
+                error_code=ErrorCode.FOOD_NOT_FOUND,
+                message=f"Food with id {food_id} not found"
+            )
+
+        return CustomAPIResponse(
+            success=True,
+            message=f"Food with id {food_id} deleted successfully"
+        )
+
+    except Exception as e:
+        logging.exception(e)
+        return CustomAPIResponse(
+            success=False,
+            error_code=ErrorCode.FOOD_DELETION_FAILED,
+            message=f"Failed to delete food with id {food_id}"
+        )
 
 @router.get("/search")
 def search_foods(query: str, limit: int = 0, db: Session = Depends(get_db)):
     food_service = FoodService(db)
     return food_service.get_food_by_query(query, limit)
-
-@router.get("/{food_id}")
-def get_food_by_id(food_id: str, db: Session = Depends(get_db)):
-    food_service = FoodService(db)
-    return food_service.get_food_by_id(food_id)
 
 @router.post("/recommend")
 def recommend_foods(user_metrics: FoodRecommendationRequest, db: Session = Depends(get_db)):

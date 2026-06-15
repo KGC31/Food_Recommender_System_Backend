@@ -83,5 +83,24 @@ class FoodService:
             result = self.food_repository.get_foods_by_kcal_range(min_kcal, max_kcal)
             return result
         except Exception as e:
-            logging.error(f"Internal Server Errer: {e}")
+            logging.error(f"Internal Server Error: {e}")
             raise e
+        
+    def get_food_by_id(self, food_id: str) -> FoodMetaData:
+        try:
+            result = self.food_repository.get_food_by_id(food_id)
+            return result
+        except Exception as e:
+            logging.error(f"Internal Server Error: {e}")
+            raise e
+        
+    def delete_food_by_id(self, food_id: str) -> StatusCodeEnum:
+        try:
+            result = self.food_repository.delete_food_by_id(food_id)
+            if result:
+                return StatusCodeEnum.SUCCESS
+            else:
+                return StatusCodeEnum.NOT_FOUND
+        except Exception as e:
+            logging.error(f"Internal Server Error: {e}")
+            return StatusCodeEnum.INTERNAL_SERVER_ERROR

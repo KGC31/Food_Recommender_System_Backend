@@ -69,3 +69,38 @@ class FoodRepository:
         except Exception as e:
             logging.error(f"Internal Server Error: {e}")
             raise e
+        
+    def get_food_by_id(self, food_id: str) -> FoodMetaData:
+        try:
+            query = select(
+                    FoodMetaData.id,
+                    FoodMetaData.name_vi,
+                    FoodMetaData.name_en,
+                    FoodMetaData.kcal_per_100g,
+                    FoodMetaData.kj_per_100g,
+                    FoodMetaData.source,
+                    FoodMetaData.source_url
+                ).filter(FoodMetaData.id == food_id)
+            
+            result = self.db.execute(query).mappings().one_or_none()
+            return result
+        except Exception as e:
+            logging.error(f"Internal Server Error: {e}")
+            raise e
+        
+    def delete_food_by_id(self, food_id: str) -> bool:
+        try:
+            query = select(FoodMetaData).filter(FoodMetaData.id == food_id)
+            food = self.db.execute(query).scalar_one_or_none()
+            
+            if not food:
+                return False
+            
+            self.db.delete(food)
+            self.db.flush()
+            
+            return True
+        
+        except Exception as e:
+            logging.error(f"Internal Server Error: {e}")
+            raise e
