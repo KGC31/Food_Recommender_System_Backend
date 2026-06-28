@@ -31,8 +31,44 @@ class HealthMetricsService:
         return round(bmr, 2)
     
     def weight_health_condition_diagnosis(self, bmi: float) -> str: 
-        memberships = self.bmi_memberships(bmi) 
-        return max(memberships, key=memberships.get)
+        memberships = self.bmi_memberships(bmi)
+
+        sorted_memberships = sorted(
+            memberships.items(),
+            key=lambda x: x[1],
+            reverse=True,
+        )
+
+        primary_label, primary_degree = sorted_memberships[0]
+        secondary_label, secondary_degree = sorted_memberships[1]
+
+        # Boundary cases
+        if secondary_degree >= 0.2:
+            if primary_label == "overweight" and secondary_label == "normal_weight":
+                return "slightly_overweight"
+
+            if primary_label == "normal_weight" and secondary_label == "underweight":
+                return "slightly_underweight"
+
+            if (
+                primary_label == "obesity_class_I"
+                and secondary_label == "overweight"
+            ):
+                return "borderline_obesity_class_I"
+
+            if (
+                primary_label == "obesity_class_II"
+                and secondary_label == "obesity_class_I"
+            ):
+                return "borderline_obesity_class_II"
+
+            if (
+                primary_label == "obesity_class_III"
+                and secondary_label == "obesity_class_II"
+            ):
+                return "borderline_obesity_class_III"
+            
+            return primary_label
     
     def calculate_calorie_target(self, bmi: float, bmr: float, activity_factor: float) -> int:
         tdee = bmr * activity_factor
