@@ -44,7 +44,11 @@ def get_food_by_id(food_id: str, db: Session = Depends(get_db)):
                 message=f"Food with id {food_id} not found"
             )
 
-        return food_data
+        return CustomAPIResponse(
+            data=food_data,
+            success=True,
+            message="Food retrieve successfully"
+        )
     except Exception as e:
         logging.exception(e)
         return CustomAPIResponse(
@@ -107,17 +111,18 @@ def delete_food(food_id: str, db: Session = Depends(get_db)):
             message=f"Failed to delete food with id {food_id}"
         )
 
-@router.get("/search")
-def search_foods(query: str, limit: int = 0, db: Session = Depends(get_db)):
-    food_service = FoodService(db)
-    return food_service.get_food_by_query(query, limit)
-
 @router.post("/recommend")
 def recommend_foods(user_metrics: FoodRecommendationRequest, db: Session = Depends(get_db)):
     recommender_service = RecommenderService(db)
     
     try:
-        return recommender_service.get_recommended_foods(user_metrics)
+        recommend_data = recommender_service.get_recommended_foods(user_metrics)
+        
+        return CustomAPIResponse(
+            data=recommend_data,
+            success=True,
+            message="Retrieve food recommendation successfully"
+        )
     
     except Exception as e:
         logging.exception(e)
