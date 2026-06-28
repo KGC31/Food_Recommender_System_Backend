@@ -57,6 +57,8 @@ class RecommenderService:
                         name_en=food["name_en"],
                         kcal_per_100g=food["kcal_per_100g"],
                         kj_per_100g=food["kj_per_100g"],
+                        source=food["source"],
+                        source_url=food["source_url"],
                     ),
 
                     macros_nutrition_info=MacrosNutritionInfo(**food_nutrients_obj.get("macros_nutrition_info", {})),
