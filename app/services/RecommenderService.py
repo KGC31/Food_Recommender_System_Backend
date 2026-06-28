@@ -35,7 +35,7 @@ class RecommenderService:
     
     def get_recommended_foods(self, user_metrics: FoodRecommendationRequest) -> list[FoodBaseModel]:
         try:
-            result = []
+            food_list = []
             bmi = self.health_metrics_service.calculate_bmi(user_metrics.weight_kg, user_metrics.height_cm)
             bmr = self.health_metrics_service.calculate_bmr(user_metrics.weight_kg, user_metrics.height_cm, user_metrics.age, user_metrics.gender)
             
@@ -60,7 +60,6 @@ class RecommenderService:
                         source=food["source"],
                         source_url=food["source_url"],
                     ),
-
                     macros_nutrition_info=MacrosNutritionInfo(**food_nutrients_obj.get("macros_nutrition_info", {})),
                     sugars_nutrition_info=SugarsNutritionInfo(**food_nutrients_obj.get("sugars_nutrition_info", {})),
                     minerals_nutrition_info=MineralsNutritionInfo(**food_nutrients_obj.get("minerals_nutrition_info", {})),
@@ -72,7 +71,17 @@ class RecommenderService:
                     amino_acids_nutrition_info=AminoAcidsNutritionInfo(**food_nutrients_obj.get("amino_acids_nutrition_info", {})),
                 )
                 
-                result.append(object)
+                food_list.append(object)
+                
+            result = {
+                "diagnosis": {
+                    "bmi": bmi,
+                    "bmr": bmr,
+                    "tdee": bmr * user_metrics.activity_factor,
+                    "condition": self.health_metrics_service.weight_health_condition_diagnosis(bmi),
+                },
+                "food_list": food_list
+            }
                 
             return result
         except Exception as e:
